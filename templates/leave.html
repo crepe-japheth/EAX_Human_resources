@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block main %}
+<!-- Navbar End -->
+
+<!-- Form Start -->
+<div class="container-fluid pt-4 px-4">
+    <form method="post" class="row g-4">
+        <div class="col-sm-12 col-xl-12">
+            {% csrf_token %}
+            <div class="bg-white rounded h-100 p-4">
+                <h6 class="mb-4">Apply Leave</h6>
+                <div class="form-floating mb-3">
+                    <input type="date" name="leaving_date" class="form-control bg-white" id="floatingInput"
+                        placeholder="name@example.com">
+                    <label for="floatingInput">Leave date</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="date" name="returning_date" class="form-control bg-white" id="floatingPassword"
+                        placeholder="Password">
+                    <label for="floatingPassword">Returning date</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <select class="form-select bg-white" name="leave_type" id="floatingSelect"
+                        aria-label="Floating label select example">
+                        <option value="paid_annual">Paid annual</option>
+                        <option value="paid_sick">Paid sick</option>
+                        <option value="unpaid_sick">Unpaid sick</option>
+                        <option value="unpaid_annual">Unpaid annual</option>
+                        <option value="incidental">Incidental leave</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <label for="floatingSelect">Leave with selects</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control bg-white" name="comment" placeholder="Leave a comment here"
+                        id="floatingTextarea" style="height: 150px;"></textarea>
+                    <label for="floatingTextarea">Comments</label>
+                </div>
+                <div class="m-n2">
+                    <button type="submit" class="btn btn-primary m-2">Apply Leave</button>
+                </div>
+            </div>
+        </div>
+        
+    </form>
+
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-white rounded h-100 p-4">
+                <h6 class="mb-4">Applied Leaves</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Leave Type</th>
+                                <th scope="col">Leave Date</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for leave in leaves %}
+                            <tr>
+                                <td>{{leave.leave_type}}</td>
+                                <td>{{leave.leave_date}}</td>
+                                <td>{{leave.status}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Form End -->
+
+
+<!-- Footer Start -->
+{% endblock main %}

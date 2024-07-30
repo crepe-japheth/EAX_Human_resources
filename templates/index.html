@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block main %}
+<!-- Sale & Revenue Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-6 col-xl-4">
+            <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">{{card1_text}}</p>
+                    <h6 class="mb-0 text-muted">{{card1_value}}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-4">
+            <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">{{card2_text}} {% for leave in total_leave_type%}{{leave.leave_date}}{% endfor %}</p>
+                    <h6 class="mb-0 text-muted">{{card2_value}}</h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-4">
+            <div class="bg-white rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2">{{card3_text}}</p>
+                    <h6 class="mb-0 text-muted">{{card3_value}}</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sale & Revenue End -->
+
+
+<!-- Sales Chart Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-white rounded h-100 p-4">
+                <h6 class="mb-4">Single Line Chart</h6>
+                <canvas id="line-chart"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-white rounded h-100 p-4">
+                <h6 class="mb-4">Doughnut Chart</h6>
+                <canvas id="doughnut-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}
+<!-- Sales Chart End -->
+{% block script %}
+<script>
+    (function ($) {
+    "use strict";
+
+
+    // Chart Global Color
+    // Chart.defaults.color = "#6C7293";
+    // Chart.defaults.borderColor = "#000000";
+
+
+    
+
+    // Single Line Chart
+    var ctx3 = $("#line-chart").get(0).getContext("2d");
+    var myChart3 = new Chart(ctx3, {
+        type: "line",
+        data: {
+            labels: [{% for leave_day in total_month_leave %}'{{leave_day.leave_date.day}}', {% endfor %}],
+            datasets: [{
+                label: "Leaving in Months",
+                fill: false,
+                backgroundColor: "rgba(235, 22, 22, .7)",
+                data: [{% for leave_day in total_month_leave %}'{{leave_day.leave_date__count}}', {% endfor %}]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+
+   
+
+    // Doughnut Chart
+    var ctx6 = $("#doughnut-chart").get(0).getContext("2d");
+    var myChart6 = new Chart(ctx6, {
+        type: "doughnut",
+        data: {
+            labels: [{% for leave_type in total_leave_type %}'{{leave_type.leave_type}}', {% endfor %}],
+            datasets: [{
+                backgroundColor: [
+                    "rgba(235, 22, 22, .7)",
+                    "rgba(245, 40, 145, 0.8)",
+                    "rgba(143, 187, 139, 0.8)",
+                    "rgba(143, 0, 255, 0.8)",
+                    "rgba(0, 0, 255, 0.8)",
+                    "rgba(0, 255, 255, 0.8)"
+                ],
+                data: [{% for leave_type in total_leave_type %}'{{leave_type.leave_type__count}}', {% endfor %}]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+
+
+    })(jQuery);
+</script>
+
+{% endblock script %}
+
