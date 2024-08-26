@@ -1,21 +1,14 @@
-
-
 from pathlib import Path
 import os
-from dotenv import load_dotenv
+from decouple import config
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, ".env"))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "somesecret**" #os.getenv('SECRET_KEY')
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #os.getenv('DEBUG')
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', cast=bool) 
 ALLOWED_HOSTS = ['*']
 
 
@@ -69,31 +62,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eax_employee_management.wsgi.application'
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.mysql",
-#         "NAME":"human_resources",
-#         "USER":"root", 
-#         "PASSWORD":"", 
-#         "HOST":"localhost", 
-#         "PORT":"3306" 
-#     }
-# }
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME":"eaafwjcc_humanresources", 
-        "USER":"eaafwjcc_humanresource_user", 
-        "PASSWORD":"Infotech!123", 
-        "HOST":"localhost", 
-        "PORT":"3306" 
+        "ENGINE": config('DB_ENGINE', cast=str),
+        "NAME":config('DB_NAME'),
+        "USER":config("DB_USER"), 
+        "PASSWORD":config('DB_PASSWORD'), 
+        "HOST":config('DB_HOST'), 
+        "PORT":config('DB_PORT') 
     }
 }
 
 
 
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -112,16 +93,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 #the email settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True 
-DEFAULT_FROM_EMAIL = "EAX Leave Management Platform"
-EMAIL_HOST_USER = ' japhethcrepe@gmail.com'
-EMAIL_HOST_PASSWORD = 'zdiacpwpdvlzesvv'
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool) 
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
 
 LANGUAGE_CODE = 'en-us'
 
@@ -130,10 +110,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+AUTH_USER_MODEL = 'employee_leave.CustomUser'
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [

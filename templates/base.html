@@ -73,6 +73,7 @@
                     <a href="{% url 'employee' %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Employees</a>
                     <a href="/admin" class="nav-item nav-link"><i class="fa fa-table me-2"></i>View Admin</a>
                     {% endif %}
+                    <a href="{% url 'profile' %}" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Profile</a>
                     <a href="/logout" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Logout</a>
                     
                 </div>
@@ -85,7 +86,7 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                <a href="{% url 'home' %}" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
                 </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
@@ -94,7 +95,7 @@
                 {% if messages %}
                 {% for message in messages %}
                 <div class="search">
-                <div class="alert-{{message.tags}}">
+                <div class="alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %}">
                     {{message}}
                 </div>
                 </div>

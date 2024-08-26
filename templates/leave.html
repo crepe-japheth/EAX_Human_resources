@@ -4,6 +4,8 @@
 
 <!-- Form Start -->
 <div class="container-fluid pt-4 px-4">
+    {% if request.user.employee %}
+    
     <form method="post" class="row g-4">
         <div class="col-sm-12 col-xl-12">
             {% csrf_token %}
@@ -22,12 +24,11 @@
                 <div class="form-floating mb-3">
                     <select class="form-select bg-white" name="leave_type" id="floatingSelect"
                         aria-label="Floating label select example">
-                        <option value="paid_annual">Paid annual</option>
-                        <option value="paid_sick">Paid sick</option>
-                        <option value="unpaid_sick">Unpaid sick</option>
-                        <option value="unpaid_annual">Unpaid annual</option>
-                        <option value="incidental">Incidental leave</option>
-                        <option value="other">Other</option>
+                        <option value="paid_leave">Paid leave</option>
+                        <option value="sick_leave">Sick leave</option>
+                        <option value="marternity_leave">Marternity leave</option>
+                        <option value="parternity_leave">Parternity leave</option>
+                        <option value="sabbatical_leave">Sabbatical leave</option>
                     </select>
                     <label for="floatingSelect">Leave with selects</label>
                 </div>
@@ -44,6 +45,11 @@
         
     </form>
 
+    {% else %}
+    <div class="bg-white rounded h-100 p-4">
+        <h6 class="mb-4 text-dark">Sorry NO employee Assigned Yet</h6>
+    </div>
+    {% endif %}
     <div class="row g-4">
         <div class="col-12">
             <div class="bg-white rounded h-100 p-4">
