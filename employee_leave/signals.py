@@ -10,7 +10,8 @@ def leave_created_signal(sender, instance, created, **kwargs):
     if created:
         try:
             send_mail_to_employee(config("HR_EMAIL"), instance.leave_date, instance.return_date,instance.status, instance.employee.username, instance.leave_type)
-        except:
+        except Exception as error:
+            print(error)
             print(f'the leave is being applied {instance.employee.username} - {instance.leave_date}')
     else:
         if instance.status == 'approved':
@@ -19,7 +20,8 @@ def leave_created_signal(sender, instance, created, **kwargs):
             employee.save()
         try:
             send_mail_to_employee(instance.employee.email, instance.leave_date, instance.return_date,instance.status, instance.employee.username, instance.leave_type)
-        except:
+        except Exception as error:
+            print(error)
             print(f'the leave is being updated {instance.employee.username} - {instance.leave_date}')
 
 

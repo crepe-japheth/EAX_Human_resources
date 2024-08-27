@@ -41,7 +41,6 @@ def homepage(request):
         return render(request, 'index.html', context )
     else:
         if hasattr(request.user, 'employee'):
-            print("Homething ont termonal")
             employees = Employee.objects.filter(user=request.user)[0]
             all_leaves = Leave.objects.filter(employee=request.user, leave_date__month=datetime.datetime.now().month)
             total_allowed_leaves = employees.allowed_leave
