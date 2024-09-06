@@ -43,9 +43,9 @@ def homepage(request):
         if hasattr(request.user, 'employee'):
             employees = Employee.objects.filter(user=request.user)[0]
             all_leaves = Leave.objects.filter(employee=request.user, leave_date__month=datetime.datetime.now().month)
-            total_allowed_leaves = employees.allowed_leave
-            taken_leave = employees.taken_leave
-            remaining_leave = total_allowed_leaves - taken_leave 
+            total_allowed_leaves = employees.initial_leave
+            taken_leave = int(employees.taken_leave)
+            remaining_leave = int(employees.allowed_leave)
 
             total_leave = all_leaves.values('leave_date').annotate(Count('leave_date'))
             total_leave_type = all_leaves.values('leave_type').annotate(Count('leave_type'))
@@ -95,12 +95,20 @@ def leave(request):
         returning_date = request.POST.get('returning_date')
         comment = request.POST.get('comment')
         if leave_type == 'paid_leave':
-            if calc_annual(leave_date, returning_date) == False:
+            if calc_annual(leave_date, returning_date)[0] == False:
                 messages.error(request, 'Sorry!!, you cannot take more than 18 days for annual paid leave')
                 return redirect('home')
+            elif calc_annual(leave_date, returning_date)[1] > request.user.employee.allowed_leave:
+                messages.error(request, 'Sorry!!, you cannot take more than remaining days for annual paid leave')
+                return redirect('home')
+
             else:
                 leave_obj = Leave(employee=request.user, leave_type=leave_type, leave_date=leave_date, return_date=returning_date, comment=comment)
                 leave_obj.save()
+                employee_obj = request.user.employee
+                employee_obj.allowed_leave = employee_obj.allowed_leave - calc_annual(leave_date, returning_date)[1]
+                employee_obj.taken_leave = employee_obj.taken_leave + calc_annual(leave_date, returning_date)[1]
+                employee_obj.save()
                 messages.success(request, 'Your leave request have been sent')
                 return redirect('home')
         elif leave_type == 'sick_leave':

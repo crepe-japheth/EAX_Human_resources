@@ -53,8 +53,9 @@ class Employee(models.Model):
     date_of_birth = models.DateField(null=True, blank=False)
     department = models.CharField(max_length=200, choices=DEPARTMENT, null=True, blank=False)
     rssb_id = models.CharField(max_length=200, null=True, blank=False)
-    allowed_leave = models.IntegerField(default=10, blank=True, null=True)
+    allowed_leave = models.IntegerField(default=18, blank=True, null=True)
     taken_leave = models.IntegerField(default=0, blank=True, null=True)
+    initial_leave = models.IntegerField(default=18, blank=True, null=True)
     photo = models.ImageField(upload_to='profile/',blank=True, null=True)
 
     def __str__(self):

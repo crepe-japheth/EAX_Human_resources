@@ -8,5 +8,5 @@ class LeaveResource(resources.ModelResource):
         fields = ['employee', 'leave_type','leave_date', 'return_date', 'status']
 
     def dehydrate_employee(self, obj):
-        print(obj.employee.username)
+        # print(obj.employee.username)
         return str(obj.employee.username)
