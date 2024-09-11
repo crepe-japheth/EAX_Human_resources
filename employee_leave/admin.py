@@ -53,6 +53,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     inlines = [EmployeeAttachmentInline, NextOfKeenInline]
     list_display = ['user', 'sex', 'position', 'hire_date']
     # readonly_fields = ('taken_leave', allowed_leave, initial_leave)
+    # exclude = ['initial_leave',]
 
 
     
