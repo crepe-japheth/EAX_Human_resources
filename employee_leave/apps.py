@@ -21,9 +21,9 @@ class EmployeeLeaveConfig(AppConfig):
         import employee_leave.signals
 
         # Start the scheduler in a separate thread to avoid blocking the main thread
-        def start_scheduler():
-            from .scheduler import start_scheduler
-            start_scheduler()
-            print("started Job scheduler ...")
+        # def start_scheduler():
+        #     from .scheduler import start_scheduler
+        #     start_scheduler()
+        #     print("started Job scheduler ...")
 
-        threading.Thread(target=start_scheduler).start()
+        # threading.Thread(target=start_scheduler).start()

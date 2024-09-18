@@ -94,6 +94,30 @@ def leave(request):
         leave_date = request.POST.get('leaving_date')
         returning_date = request.POST.get('returning_date')
         comment = request.POST.get('comment')
+        # checking the leave past date and overlapping leave request
+        # 
+        # 
+        #  # Convert string dates to datetime objects for comparison
+        leave_date_obj = datetime.datetime.strptime(leave_date, '%Y-%m-%d')
+        returning_date_obj = datetime.datetime.strptime(returning_date, '%Y-%m-%d')
+
+        # Check if the leave dates are in the past
+        if leave_date_obj.date() < datetime.datetime.today().date():
+            messages.error(request, 'Sorry!!, you cannot request leave for past dates.')
+            return redirect('home')
+
+        # Check if the requested leave dates overlap with any previous leaves
+        overlapping_leaves = Leave.objects.filter(
+            employee=request.user,
+            leave_date__lte=returning_date_obj,
+            return_date__gte=leave_date_obj
+        )
+
+        if overlapping_leaves.exists():
+            messages.error(request, 'Sorry!!, you have already requested leave during this period.')
+            return redirect('home') 
+
+
         if leave_type == 'paid_leave':
             if calc_annual(leave_date, returning_date)[0] == False:
                 messages.error(request, 'Sorry!!, you cannot take more than 18 days for annual paid leave')
@@ -105,10 +129,10 @@ def leave(request):
             else:
                 leave_obj = Leave(employee=request.user, leave_type=leave_type, leave_date=leave_date, return_date=returning_date, comment=comment)
                 leave_obj.save()
-                employee_obj = request.user.employee
-                employee_obj.allowed_leave = employee_obj.allowed_leave - calc_annual(leave_date, returning_date)[1]
-                employee_obj.taken_leave = employee_obj.taken_leave + calc_annual(leave_date, returning_date)[1]
-                employee_obj.save()
+                # employee_obj = request.user.employee
+                # employee_obj.allowed_leave = employee_obj.allowed_leave - calc_annual(leave_date, returning_date)[1]
+                # employee_obj.taken_leave = employee_obj.taken_leave + calc_annual(leave_date, returning_date)[1]
+                # employee_obj.save()
                 messages.success(request, 'Your leave request have been sent')
                 return redirect('home')
         elif leave_type == 'sick_leave':
@@ -149,11 +173,6 @@ def leave(request):
                 messages.success(request, 'Your leave request have been sent')
                 return redirect('home')
     
-        # else:
-        #     leave_obj = Leave(employee=request.user, leave_type=leave_type, leave_date=leave_date, return_date=returning_date, comment=comment)
-        #     leave_obj.save()
-        #     messages.success(request, 'Your leave request have been sent')
-        #     return redirect('home')
     else:
         applied_leave = Leave.objects.filter(employee=request.user)
         return render(request, 'leave.html', {'leaves':applied_leave})
