@@ -69,6 +69,9 @@
                 <div class="navbar-nav w-100">
                     <a href="{% url 'home' %}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
                     <a href="{% url 'leave' %}" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Leave apply</a>
+                    {% if user.employee.department_supervisor %}
+                    <a href="{% url 'supervisor_leaves' %}" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Your Staff Leave</a>
+                    {% endif %}
                     {% if user.is_superuser %}
                     <a href="{% url 'employee' %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Employees</a>
                     <a href="/admin" class="nav-item nav-link"><i class="fa fa-table me-2"></i>View Admin</a>

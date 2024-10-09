@@ -9,10 +9,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', cast=bool) 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
+
+ALLOWED_HOSTS = ['localhost', '.ngrok-free.app', 'humanresources.ea-africaexchange.com']
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app',
+    'http://localhost',
+    'https://humanresources.ea-africaexchange.com'
+]
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -40,7 +47,6 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['https://eaxlms.up.railway.app']
 
 ROOT_URLCONF = 'eax_employee_management.urls'
 

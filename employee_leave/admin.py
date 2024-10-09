@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee, Leave, NextOfKeen, EmployeeAttachment 
+from .models import Employee, Leave, NextOfKeen, EmployeeAttachment , Department
 from django.contrib.auth.models import Group
 from .resources import LeaveResource
 from import_export.admin import ExportMixin
@@ -10,7 +10,7 @@ class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
+        # ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
         ('Permissions', {
             'fields': ('is_active', 'is_staff', 'is_superuser'),
         }),
@@ -26,7 +26,7 @@ class CustomUserAdmin(BaseUserAdmin):
 
 
 class LeaveAdmin(ExportMixin, admin.ModelAdmin):
-    readonly_fields = ('employee','leave_type','leave_date','return_date','comment')
+    readonly_fields = ('employee', 'supervisor_status','leave_type','leave_date','return_date','comment')
     list_display = ['employee', 'leave_type','leave_date', 'return_date', 'status']
     resource_class = LeaveResource
     list_export = ('xlsx', 'pdf', 'csv',)
@@ -51,9 +51,12 @@ class NextOfKeenInline(admin.TabularInline):
 
 class EmployeeAdmin(admin.ModelAdmin):
     inlines = [EmployeeAttachmentInline, NextOfKeenInline]
-    list_display = ['user', 'sex', 'position', 'hire_date']
+    list_display = ['first_name', 'last_name', 'sex', 'position', 'hire_date']
     # readonly_fields = ('taken_leave', allowed_leave, initial_leave)
     # exclude = ['initial_leave',]
+
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ['department_name', 'department_head']
 
 
     
@@ -66,6 +69,7 @@ except admin.sites.NotRegistered:
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Employee, EmployeeAdmin)
+admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Leave, LeaveAdmin)
 admin.site.unregister(Group)
 

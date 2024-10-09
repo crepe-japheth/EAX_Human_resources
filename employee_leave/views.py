@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Leave
 from django.contrib.auth.decorators import login_required
 import datetime
@@ -9,7 +9,6 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.forms import PasswordChangeForm
 from django.urls import reverse_lazy
-from django.contrib.auth import update_session_auth_hash
 
 @login_required(login_url="/login")
 def homepage(request):
@@ -129,10 +128,6 @@ def leave(request):
             else:
                 leave_obj = Leave(employee=request.user, leave_type=leave_type, leave_date=leave_date, return_date=returning_date, comment=comment)
                 leave_obj.save()
-                # employee_obj = request.user.employee
-                # employee_obj.allowed_leave = employee_obj.allowed_leave - calc_annual(leave_date, returning_date)[1]
-                # employee_obj.taken_leave = employee_obj.taken_leave + calc_annual(leave_date, returning_date)[1]
-                # employee_obj.save()
                 messages.success(request, 'Your leave request have been sent')
                 return redirect('home')
         elif leave_type == 'sick_leave':
@@ -177,7 +172,23 @@ def leave(request):
         applied_leave = Leave.objects.filter(employee=request.user)
         return render(request, 'leave.html', {'leaves':applied_leave})
 
+def supervisor_change_status(request):
+    context = {
+        "leaves":Leave.objects.filter(employee__employee__department=request.user.employee.department)
+    }
+    return render(request, 'supervisor_leaves.html', context)
 
+def supervisor_approve(request, pk):
+    leave_obj = get_object_or_404(Leave, pk=pk)
+    leave_obj.supervisor_status = 'approved'
+    leave_obj.save()
+    return redirect('supervisor_leaves')
+    
+def supervisor_cancel(request, pk):
+    leave_obj = get_object_or_404(Leave, pk=pk)
+    leave_obj.supervisor_status = 'cancelled'
+    leave_obj.save()
+    return redirect('supervisor_leaves')
 
 class ProfileView(TemplateView):
     template_name = 'profile.html'
